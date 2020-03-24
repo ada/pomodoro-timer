@@ -12,14 +12,15 @@
 <body id="options">
   <form>
     <section>
-      <h4>Duration</h4>
+      <h4>Duration in minutes</h4>
       <table width="100%">
         <tr>
           <td width="75%">
             <label for="UIRangeWorkDuration">Work</label>
           </td>
           <td style="text-align: right;">
-            <input type="range" id="UIRangeWorkDuration" name="UIRangeWorkDuration" min="0" max="60" value="0" step="5" required style="width: 80px;"> 
+            <input type="number" id="UIRangeWorkDuration" name="UIRangeWorkDuration" min="1" max="60" value="1" step="5"
+              required style="width: 80px;">
           </td>
         </tr>
         <tr>
@@ -27,7 +28,8 @@
             <label for="UIRangeShortBreakDuration">Short break</label>
           </td>
           <td style="text-align: right;">
-            <input type="range" id="UIRangeShortBreakDuration" name="UIRangeShortBreakDuration" min="0" max="60" value="0" step="5" required style="width: 80px;"> 
+            <input type="number" id="UIRangeShortBreakDuration" name="UIRangeShortBreakDuration" min="1" max="60"
+              value="1" step="5" required style="width: 80px;">
           </td>
         </tr>
         <tr>
@@ -35,7 +37,8 @@
             <label for="UIRangeLongBreakDuration">Long break</label>
           </td>
           <td style="text-align: right;">
-            <input type="range" id="UIRangeLongBreakDuration" name="UIRangeLongBreakDuration" min="0" max="60" value="0" step="5" required style="width: 80px;"> 
+            <input type="number" id="UIRangeLongBreakDuration" name="UIRangeLongBreakDuration" min="1" max="60"
+              value="1" step="5" required style="width: 80px;">
           </td>
         </tr>
       </table>
@@ -48,20 +51,18 @@
 
     <section>
       <h4>Pomodoro Technique</h4>
-      <p>To read about the Pomodoro technique please refer to <a href="https://en.wikipedia.org/wiki/Pomodoro_Technique">Pomodoro Technique on Wikipedia</a>.</p>
+      <p>To read about the Pomodoro technique please refer to <a
+          href="https://en.wikipedia.org/wiki/Pomodoro_Technique">Pomodoro Technique on Wikipedia</a>.</p>
     </section>
 
     <section>
       <p class="text-gray">
-        <small>This extension is open source and available on <a href="https://github.com/ada/web-time" title="Repository link">github.com/ada/web-time</a>.</small>
+        <small>This extension is open source and available on <a href="https://github.com/ada/pomodoro-timer"
+            title="Repository link">github.com/ada/pomodoro-timer</a>.</small>
       </p>
     </section>
-    
 
   </form>
-
-
-
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 import * as util from '../component/util.js';
-import * as settings from '../component/settings.js'; 
+import * as settings from '../component/settings.js';
 
 let UIButtonPomodoro = document.getElementById('UIButtonPomodoro');
 let UIButtonShortBreak = document.getElementById('UIButtonShortBreak');
@@ -10,15 +10,16 @@ let canvas, stage;
 let dragging = false;
 let lastX;
 let marker;
-let background; 
+let background;
 let _settings;
 
 async function stopTimer() {
-    browser.runtime.sendMessage({ id: 'STOP_TIMER' });
+    console.error("Unable to send message with id STOP_TIMER");
 }
 
 async function startTimer(duration, task) {
     browser.runtime.sendMessage({ id: 'START_TIMER', duration: duration, task: task });
+    onTickInterval();
 }
 
 async function onPomodoro() {
@@ -33,14 +34,20 @@ async function onLongBreak() {
     startTimer(_settings.duration.longBreak, 'LONG_BREAK');
 }
 
-async function openOptionsPage(){
+async function openOptionsPage() {
     browser.runtime.openOptionsPage();
+}
+
+async function onTickInterval() {
+    browser.runtime.sendMessage({ id: 'GET_POMODORO' });
 }
 
 async function init() {
     _settings = await settings.get();
     initCanvas();
     initEventListeners();
+    onTickInterval();
+    let timeout = setInterval(onTickInterval, 1000);
 }
 
 async function getValue() {
@@ -92,27 +99,26 @@ async function onMouseUp() {
     dragging = false;
 }
 
-let onWheelTimeout; 
+let onWheelTimeout;
 async function onWheel(e) {
-    if(Math.abs(e.deltaY) < 70){
+    if (Math.abs(e.deltaY) < 70) {
         return;
     }
 
     clearTimeout(onWheelTimeout);
     let step = 5;
-    console.log(e);
 
     if (e.deltaY > 0)
         step = step * -1;
 
     //await setValue(Math.round(await getValue() + step / 1) * 1, 0);
-    onWheelTimeout = setTimeout(async function(){
+    onWheelTimeout = setTimeout(async function () {
         let value = await getValue();
-        let target = Math.round((value+step)/5) * 5; 
-        if (target === 0){
+        let target = Math.round((value + step) / 5) * 5;
+        if (target === 0) {
             stopTimer();
             setValue(0);
-        }   
+        }
         else
             startTimer(target * 60 * 1000, '');
     }, 50)
@@ -177,7 +183,7 @@ async function initCanvas() {
     stage.addChild(marker);
 
     var gradient = new createjs.Shape();
-    gradient.graphics.beginLinearGradientFill(['#660000', '#ff666600', '#ff666600', '#660000'], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height); 
+    gradient.graphics.beginLinearGradientFill(['#660000', '#ff666600', '#ff666600', '#660000'], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height);
     gradient.alpha = 0.1;
     stage.addChild(gradient);
 
@@ -187,12 +193,11 @@ async function initCanvas() {
 
 async function handleMessage(message) {
     switch (message.id) {
-        case 'TICK':
-            console.log(message.pomodoro);
+        case 'POMODORO':
             if (!dragging && !util.isEmptyObject(message.pomodoro)) {
                 setValue((message.pomodoro.timeLeft / 1000) / 60, 400);
                 let colors = ['#f50001', '#e50200'];
-                if(message.pomodoro.task.indexOf('BREAK') > -1){
+                if (message.pomodoro.task.indexOf('BREAK') > -1) {
                     colors = ['#00c429', '#00b52d'];
                 }
                 document.body.style.backgroundColor = colors[1];

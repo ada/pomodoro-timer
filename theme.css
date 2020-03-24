@@ -82,7 +82,7 @@ a {
   font-size: 14px;
 }
 
-@media (prefers-color-scheme: ligth) {
+@media (prefers-color-scheme: light) {
   #options {
     background-color: rgb(247, 247, 247);
     color: #262626;
@@ -114,7 +114,11 @@ form label {
   }
 }
 
-form input[type="text"], form input[type="time"], form input[type="date"], form select {
+form input[type="text"], 
+form input[type="time"], 
+form input[type="date"], 
+form select, 
+form input[type="number"] {
   font-family: inherit;
   height: 32px;
   font-size: 14px;
@@ -157,9 +161,9 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover {
     color: white;
   }
   input[type="button"]:hover, input[type="submit"]:hover, button:hover {
-    background-color: #545454;
+    background-color: #545454 !important;
   }
-  form input[type="text"], form input[type="time"], form input[type="date"], form select {
+  form input[type="text"], form input[type="time"], form input[type="date"], form select, form input[type="number"] {
     color: white;
   }
 }
@@ -196,20 +200,3 @@ section {
   margin-right: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  input[type="button"], input[type="submit"], button {
-    color: #2B2B2B;
-    fill: #2B2B2B;
-    background-color: #EDEDED;
-  }
-
-  input[type="button"]:hover, input[type="submit"]:hover, button:hover {
-    background-color: rgb(242, 242, 242);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-  }
-
-  input[type="button"]:active, input[type="submit"]:active, button:active {
-    background-color: rgba(242, 242, 242, 0.8);
-  }
-
-}

@@ -25,7 +25,7 @@
         <input type="number" id="targetValue">
         <button type="button" id="buttonSet">Set</button>
     </form>
-    
+
     <script>
         var canvas, stage;
         let dragging = false;
@@ -41,7 +41,7 @@
             stage.addChild(background);
 
             var devider = new createjs.Shape();
-            devider.graphics.beginFill("black").drawRect(0, canvas.height/2-3, canvas.width, 6);
+            devider.graphics.beginFill("black").drawRect(0, canvas.height / 2 - 3, canvas.width, 6);
             devider.alpha = 0.7;
             stage.addChild(devider);
 
@@ -49,7 +49,7 @@
             indicator.graphics.beginFill("white");
             indicator.graphics.moveTo(140, 190);
             indicator.graphics.lineTo(160, 190);
-            indicator.graphics.lineTo(150, 190-17.3);
+            indicator.graphics.lineTo(150, 190 - 17.3);
             stage.addChild(indicator);
 
             marker = new createjs.Container();
@@ -57,7 +57,7 @@
             ticks.graphics.beginFill("white");
 
             let x = 150;
-            let y = canvas.height/2 - 25;
+            let y = canvas.height / 2 - 25;
 
             for (var i = 0; i < 61; i++) {
                 if (i % 5) {
@@ -65,7 +65,7 @@
                 } else {
                     var label = new createjs.Text(i, "20px verdana", "white");
                     label.x = x;
-                    label.y = y-20;
+                    label.y = y - 20;
                     label.textBaseline = "alphabetic";
                     label.textAlign = "center";
                     marker.addChild(label);
@@ -79,7 +79,7 @@
             stage.addChild(marker);
 
             var gradient = new createjs.Shape();
-            gradient.graphics.beginLinearGradientFill(["#660000", "#ff666600","#ff666600", "#660000"], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height);0
+            gradient.graphics.beginLinearGradientFill(["#660000", "#ff666600", "#ff666600", "#660000"], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height); 0
             gradient.alpha = 0.1;
             stage.addChild(gradient);
 
@@ -90,9 +90,9 @@
 
             initEventListeners();
 
-            let f = setInterval(1000, function(){
+            let f = setInterval(1000, function () {
                 console.log("anim");
-                setValue(getValue()+1);
+                setValue(getValue() + 1);
             })
         }
 
@@ -117,7 +117,7 @@
             }
 
             //marker.x = -(a * 10);
-            createjs.Tween.get(marker).to({ x: -(a * 15)}, animationDuration, createjs.Ease.circInOut);
+            createjs.Tween.get(marker).to({ x: -(a * 15) }, animationDuration, createjs.Ease.circInOut);
         }
 
         function initEventListeners() {
@@ -140,7 +140,7 @@
 
                     let step = Math.round(delta / 1) * 1;
                     console.log(step);
-                    let current = Math.round(getValue() + (step*-1)); 
+                    let current = Math.round(getValue() + (step * -1));
                     if (current === 0 || current === 60 || current === getValue) {
                         return;
                     }
