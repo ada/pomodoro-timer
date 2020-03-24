@@ -1,12 +1,8 @@
 # Pomodoro Timer
-A browser extension to accurately (±1s) track screen time on the visited websites. 
 
-![alt text](https://github.com/ada/web-time/blob/master/screenshot.png?raw=true "Screenshot")
 
 
 # Features
-- Get notification when pomodoro timer ends
-- Take short or long breaks
 
 # Privacy Policy
 ## Stored Data
