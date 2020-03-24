@@ -13,6 +13,10 @@ let marker;
 let background;
 let _settings;
 
+async function onTickInterval() {
+    browser.runtime.sendMessage({ id: 'GET_POMODORO' });
+}
+
 async function stopTimer() {
     console.error("Unable to send message with id STOP_TIMER");
 }
@@ -36,10 +40,6 @@ async function onLongBreak() {
 
 async function openOptionsPage() {
     browser.runtime.openOptionsPage();
-}
-
-async function onTickInterval() {
-    browser.runtime.sendMessage({ id: 'GET_POMODORO' });
 }
 
 async function init() {
@@ -101,7 +101,7 @@ async function onMouseUp() {
 
 let onWheelTimeout;
 async function onWheel(e) {
-    if (Math.abs(e.deltaY) < 70) {
+    if (Math.abs(e.deltaY) < 50) {
         return;
     }
 
@@ -197,10 +197,16 @@ async function handleMessage(message) {
             if (!dragging && !util.isEmptyObject(message.pomodoro)) {
                 setValue((message.pomodoro.timeLeft / 1000) / 60, 400);
                 let colors = ['#f50001', '#e50200'];
+                let className = "body-green";
+
                 if (message.pomodoro.task.indexOf('BREAK') > -1) {
                     colors = ['#00c429', '#00b52d'];
+                    document.body.classList.add(className);
+                } else{
+                    document.body.classList.remove(className);
                 }
-                document.body.style.backgroundColor = colors[1];
+                //document.body.style.backgroundColor = colors[1];
+                
                 background.graphics.clear().beginLinearGradientFill(colors, [0, 1], 0, 0, 0, canvas.height).drawRect(0, 0, canvas.width, canvas.height).endFill();
             }
             break;

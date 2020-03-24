@@ -183,20 +183,42 @@ section {
 
 #templates {
   position: absolute;
-  left: 15px;
+  left: 0px;
   bottom: 40px;
   padding: 0;
+  text-align: center;
+  width: 100%;
 }
 
 #templates button {
-  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
   margin: 0;
   padding: 6px 7px;
-  background: #da5b5b47;
-  color:white;
+  background: #ffffff;
+  color:#e40503;
+  transition: all 0.1s ease-in-out;
+  font-weight: bold;
+  font-size: 12px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
 
 #templates button:last-child{
   margin-right: 0;
+}
+
+#templates button:hover{
+  background: #fff !important;
+  box-shadow: 0 7px 10px rgba(0,0,0,0.3);
+}
+
+#templates button:active{
+  box-shadow: 0 0px 5px rgba(0,0,0,0.3);
+}
+
+.body-green #templates button{
+  color:#004210;
+}
+
+.body-green{
+  background-color: #00b52d;
 }
 
