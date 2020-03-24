@@ -1,7 +1,7 @@
 import * as util from '../component/util.js';
 
 let pomodoro;
-let onTimeoutNotificationId = "onTimeoutNotificationId";
+let onTimeoutNotificationId = 'onTimeoutNotificationId';
 
 
 /*
@@ -12,33 +12,42 @@ async function init() {
 }
 
 async function updateUI() {
-  const text = util.isEmptyObject(pomodoro) ? "" : util.MMSS(pomodoro.timeLeft);
+  let color, text; 
+
+  if (util.isEmptyObject(pomodoro)) {
+    text = '';
+  }else{
+    color = pomodoro.task.indexOf('BREAK') > 0 ? "green" : "red";
+    text = util.MMSS(pomodoro.timeLeft);
+  }
+
   browser.browserAction.setBadgeText({ text: text });
-  browser.runtime.sendMessage({ id: "TICK", pomodoro : pomodoro });
+  browser.browserAction.setBadgeBackgroundColor({color : color});
+  browser.runtime.sendMessage({ id: 'TICK', pomodoro : pomodoro });
 }
 
 async function onTimeout() {
   stopTimer();
 
   let options = {
-    type: "basic",
-    iconUrl: browser.runtime.getURL("../asset/icons8-tomato-48.png"),
-    title: "Pomodoro!",
-    message: "",
-    buttons: ["Short break", "Long break"]
+    type: 'basic',
+    iconUrl: browser.runtime.getURL('../asset/icons8-tomato-48.png'),
+    title: 'Pomodoro!',
+    message: '',
+    buttons: ['Short break', 'Long break']
   };
 
-  if (pomodoro.task === "WORK") {
+  if (pomodoro.task === 'WORK') {
     browser.notifications.create(onTimeoutNotificationId, options);
-  browser.notifications.onButtonClicked.addListener(onNotificationButtonClicked);
+    browser.notifications.onButtonClicked.addListener(onNotificationButtonClicked);
   }
 }
 
 async function onNotificationButtonClicked(notificationId, buttonIndex) {
   if (buttonIndex === 0) {
-    startTimer(5 * 60 * 1000, "SHORT_BREAK")
+    startTimer(5 * 60 * 1000, 'SHORT_BREAK')
   } else {
-    startTimer(30 * 60 * 1000, "SHORT_BREAK")
+    startTimer(30 * 60 * 1000, 'SHORT_BREAK')
   }
 }
 
@@ -75,7 +84,7 @@ async function startTimer(duration, task) {
 }
 
 async function stopTimer() {
-  console.log("Timer stopped.");
+  console.log('Timer stopped.');
   browser.notifications.clear(onTimeoutNotificationId);
   clearInterval(pomodoro.intervalId);
   clearTimeout(pomodoro.timeoutId);
@@ -97,7 +106,7 @@ async function handleMessage(message) {
       stopTimer();
       break;
     default:
-      throw new Error(`Message id "${message.id}" is not implementd.`)
+      throw new Error(`Message id '${message.id}' is not implementd.`)
   }
 }
 

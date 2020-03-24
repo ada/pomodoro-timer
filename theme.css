@@ -51,6 +51,19 @@ a {
   position: relative;
 }
 
+#popup #UIButtonSettings{
+  position: absolute;
+  right: 10px; 
+  top: 10px; 
+  opacity: 0.3;
+  transition: all 0.3s ease-in-out;
+}
+
+#popup #UIButtonSettings:hover{
+  opacity: 0.6;
+  cursor: pointer;
+}
+
 #popup #controls {
   bottom: 0;
   left: 0;
@@ -175,6 +188,8 @@ section {
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
   margin: 0;
   padding: 6px 7px;
+  background: #da5b5b47;
+  color:white;
 }
 
 #templates button:last-child{

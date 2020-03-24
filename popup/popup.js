@@ -1,34 +1,44 @@
 import * as util from '../component/util.js';
+import * as settings from '../component/settings.js'; 
 
 let UIButtonPomodoro = document.getElementById('UIButtonPomodoro');
 let UIButtonShortBreak = document.getElementById('UIButtonShortBreak');
 let UIButtonLongBreak = document.getElementById('UIButtonLongBreak');
+let UIButtonSettings = document.getElementById('UIButtonSettings');
+
 let canvas, stage;
 let dragging = false;
 let lastX;
 let marker;
+let background; 
+let _settings;
 
 async function stopTimer() {
-    browser.runtime.sendMessage({ id: "STOP_TIMER" });
+    browser.runtime.sendMessage({ id: 'STOP_TIMER' });
 }
 
 async function startTimer(duration, task) {
-    browser.runtime.sendMessage({ id: "START_TIMER", duration: duration, task: task });
+    browser.runtime.sendMessage({ id: 'START_TIMER', duration: duration, task: task });
 }
 
 async function onPomodoro() {
-    startTimer(25 * 60 * 1000, "WORK");
+    startTimer(_settings.duration.work, 'WORK');
 }
 
 async function onShortBreak() {
-    startTimer(5 * 60 * 1000, "SHORT_BREAK");
+    startTimer(_settings.duration.shortBreak, 'SHORT_BREAK');
 }
 
 async function onLongBreak() {
-    startTimer(30 * 60 * 1000, "LONG_BREAK");
+    startTimer(_settings.duration.longBreak, 'LONG_BREAK');
+}
+
+async function openOptionsPage(){
+    browser.runtime.openOptionsPage();
 }
 
 async function init() {
+    _settings = await settings.get();
     initCanvas();
     initEventListeners();
 }
@@ -77,49 +87,64 @@ async function onMouseUp() {
         if (value === 0)
             stopTimer();
         else
-            startTimer(value * 60 * 1000, "WORK");
+            startTimer(value * 60 * 1000, '');
     }
     dragging = false;
 }
 
+let onWheelTimeout; 
 async function onWheel(e) {
+    if(Math.abs(e.deltaY) < 70){
+        return;
+    }
+
+    clearTimeout(onWheelTimeout);
     let step = 5;
     console.log(e);
-    //if (Math.abs(e.deltaY) < 20 || Math.abs(e.deltaY) > -20)
-    //    step = 1;
 
     if (e.deltaY > 0)
         step = step * -1;
 
-    await setValue(Math.round(await getValue() + step / step) * step, 400);
+    //await setValue(Math.round(await getValue() + step / 1) * 1, 0);
+    onWheelTimeout = setTimeout(async function(){
+        let value = await getValue();
+        let target = Math.round((value+step)/5) * 5; 
+        if (target === 0){
+            stopTimer();
+            setValue(0);
+        }   
+        else
+            startTimer(target * 60 * 1000, '');
+    }, 50)
 }
 
 async function initEventListeners() {
     browser.runtime.onMessage.addListener(handleMessage);
-    UIButtonPomodoro.addEventListener("click", onPomodoro);
-    UIButtonShortBreak.addEventListener("click", onShortBreak);
-    UIButtonLongBreak.addEventListener("click", onLongBreak);
+    UIButtonPomodoro.addEventListener('click', onPomodoro);
+    UIButtonShortBreak.addEventListener('click', onShortBreak);
+    UIButtonLongBreak.addEventListener('click', onLongBreak);
+    UIButtonSettings.addEventListener('click', openOptionsPage);
     canvas.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    window.addEventListener('wheel', onWheel);
+    canvas.addEventListener('mousemove', onMouseMove);
+    canvas.addEventListener('mouseup', onMouseUp);
+    canvas.addEventListener('wheel', onWheel);
 }
 
 async function initCanvas() {
-    canvas = document.getElementById("canvas");
+    canvas = document.getElementById('canvas');
     stage = new createjs.Stage(canvas);
 
-    var background = new createjs.Shape();
-    background.graphics.beginLinearGradientFill(["#f50001", "#e50200"], [0, 1], 0, 0, 0, canvas.height).drawRect(0, 0, canvas.width, canvas.height);
+    background = new createjs.Shape();
+    background.graphics.beginLinearGradientFill(['#f50001', '#e50200'], [0, 1], 0, 0, 0, canvas.height).drawRect(0, 0, canvas.width, canvas.height);
     stage.addChild(background);
 
     var devider = new createjs.Shape();
-    devider.graphics.beginFill("black").drawRect(0, canvas.height / 2 - 3, canvas.width, 6);
+    devider.graphics.beginFill('black').drawRect(0, canvas.height / 2 - 3, canvas.width, 6);
     devider.alpha = 0.7;
     stage.addChild(devider);
 
     var indicator = new createjs.Shape();
-    indicator.graphics.beginFill("white");
+    indicator.graphics.beginFill('white');
     indicator.graphics.moveTo(140, 190);
     indicator.graphics.lineTo(160, 190);
     indicator.graphics.lineTo(150, 190 - 17.3);
@@ -127,7 +152,7 @@ async function initCanvas() {
 
     marker = new createjs.Container();
     var ticks = new createjs.Shape();
-    ticks.graphics.beginFill("white");
+    ticks.graphics.beginFill('white');
 
     let x = 150;
     let y = canvas.height / 2 - 25;
@@ -136,11 +161,11 @@ async function initCanvas() {
         if (i % 5) {
             ticks.graphics.drawRect(x - 1, y - 5, 2, 10);
         } else {
-            var label = new createjs.Text(i, "20px system-ui", "white");
+            var label = new createjs.Text(i, '20px system-ui', 'white');
             label.x = x;
             label.y = y - 20;
-            label.textBaseline = "alphabetic";
-            label.textAlign = "center";
+            label.textBaseline = 'alphabetic';
+            label.textAlign = 'center';
             marker.addChild(label);
 
             ticks.graphics.drawRect(x - 2, y - 10, 4, 15);
@@ -152,11 +177,11 @@ async function initCanvas() {
     stage.addChild(marker);
 
     var gradient = new createjs.Shape();
-    gradient.graphics.beginLinearGradientFill(["#660000", "#ff666600", "#ff666600", "#660000"], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height); 0
+    gradient.graphics.beginLinearGradientFill(['#660000', '#ff666600', '#ff666600', '#660000'], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height); 
     gradient.alpha = 0.1;
     stage.addChild(gradient);
 
-    createjs.Ticker.addEventListener("tick", stage);
+    createjs.Ticker.addEventListener('tick', stage);
     createjs.Touch.enable(stage);
 }
 
@@ -166,10 +191,16 @@ async function handleMessage(message) {
             console.log(message.pomodoro);
             if (!dragging && !util.isEmptyObject(message.pomodoro)) {
                 setValue((message.pomodoro.timeLeft / 1000) / 60, 400);
+                let colors = ['#f50001', '#e50200'];
+                if(message.pomodoro.task.indexOf('BREAK') > -1){
+                    colors = ['#00c429', '#00b52d'];
+                }
+                document.body.style.backgroundColor = colors[1];
+                background.graphics.clear().beginLinearGradientFill(colors, [0, 1], 0, 0, 0, canvas.height).drawRect(0, 0, canvas.width, canvas.height).endFill();
             }
             break;
         default:
-            throw new Error(`Message id "${message.id}" is not implementd.`)
+            throw new Error(`Message id '${message.id}' is not implementd.`)
     }
 }
 
