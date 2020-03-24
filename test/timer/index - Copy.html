@@ -1,0 +1,181 @@
+<html>
+
+<head>
+    <title>Test</title>
+    <style>
+        body {
+            background: grey
+        }
+        canvas{
+            cursor: grab;
+        }
+        input{
+            height: 30px
+        }
+    </style>
+
+    <script type="text/javascript" src="../../lib/easeljs-NEXT.min.js"></script>
+    <script type="text/javascript" src="../../lib/tweenjs-NEXT.min.js"></script>
+</head>
+
+<body>
+    <form>
+        <input type="number" id="targetValue">
+        <button type="button" id="buttonSet">Set</button>
+    </form>
+    <canvas id="canvas" width="400px" height="200px"></canvas>
+    
+    
+    <script>
+        var canvas, stage;
+
+        function init() {
+            canvas = document.getElementById("canvas");
+            stage = new createjs.Stage(canvas);
+            let ctx = canvas.getContext('2d');
+            let dragging = false;
+            let lastX;
+            let marginLeft = 0;
+            var _x = 200;
+            setValue(10);
+            draw();
+        }
+
+        document.getElementById('buttonSet').addEventListener("click", function(){
+            let val = document.getElementById("targetValue").value; 
+            setValue(val);
+        })
+
+
+
+        
+
+        async function delay(delayInms) {
+            return new Promise(resolve  => {
+                setTimeout(() => {
+                resolve(2);
+                }, delayInms);
+            });
+        }
+
+        function getValue() {
+            return Math.abs(_x - 200) / 10;
+        }
+
+        async function setValue(a, duration) {
+            __x = a * -10 + 200;
+            if (_x < __x) {
+                for (let i = _x; i <= __x; i++) {
+                    _x = i; 
+                    draw();
+                    await delay(10);
+                }
+            } else {
+                for (let i = _x; i >= __x; i--) {
+                    _x = i; 
+                    draw();
+                    await delay(10);
+                }
+            }
+        }
+
+
+        function draw() {
+            if (_x > 200) {
+                _x = 200;
+            }
+
+            if (_x < -400) {
+                _x = -400;
+            }
+
+            let x = _x;
+            let y = 100;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 115, canvas.width, 3);
+            
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.moveTo(190, 140);
+            ctx.lineTo(210, 140);
+            ctx.lineTo(200, 130);
+            ctx.closePath();
+            ctx.fill();
+
+            for (var i = 0; i < 61; i++) {
+                if (i % 5) {
+                    ctx.fillRect(x - 1, y - 5, 2, 10);
+                } else {
+                    ctx.textAlign = "center";
+                    ctx.fillRect(x - 2, y - 10, 4, 15);
+                    ctx.font = "20px verdana";
+                    ctx.fillText(i, x, 80);
+                }
+                x += 10;
+            }
+
+           // console.log(getValue());
+        }
+
+
+
+        window.addEventListener('wheel', function (e) {
+            let step = 10 * 5; //5 minutes
+            if (Math.abs(e.deltaY) < 20 && Math.abs(e.deltaY) >= 20) {
+                step = 10;
+            }
+
+            console.log(e);
+            if (e.deltaY < 0) {
+                _x -= step;
+            } else {
+                _x += step;
+            }
+
+            _x = Math.round(_x / step) * step; //round to nearest multiple of 10
+            draw();
+        });
+
+        canvas.addEventListener('mousedown', function (e) {
+            var evt = e || event;
+            dragging = true;
+            lastX = evt.clientX;
+            e.preventDefault();
+        }, false);
+
+        window.addEventListener('mousemove', function (e) {
+            var evt = e || event;
+            if (dragging) {
+                var delta = evt.clientX - lastX;
+                lastX = evt.clientX; 
+                
+                let step = Math.round(delta /1) * 1; 
+                console.log(step);
+                _x += step;
+                draw();
+            }
+            e.preventDefault();
+        }, false);
+
+        window.addEventListener('mouseup', function () {
+            dragging = false;
+            console.log(_x);
+            _x = Math.round(_x /10) * 10; 
+            draw();
+        }, false);
+
+        
+
+
+        init(); 
+    </script>
+
+</body>
+
+</html>

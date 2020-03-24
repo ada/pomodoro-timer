@@ -1,0 +1,184 @@
+<html>
+
+<head>
+    <title>Test</title>
+    <style>
+        body {
+            background: grey
+        }
+
+        canvas {
+            cursor: grab;
+        }
+
+        input {
+            height: 30px
+        }
+    </style>
+
+    <script type="text/javascript" src="../../lib/easeljs-NEXT.min.js"></script>
+    <script type="text/javascript" src="../../lib/tweenjs-NEXT.min.js"></script>
+</head>
+
+<body>
+    <form>
+        <input type="number" id="targetValue">
+        <button type="button" id="buttonSet">Set</button>
+    </form>
+    
+    <script>
+        var canvas, stage;
+        let dragging = false;
+        let lastX;
+        let marker;
+
+        function init() {
+            canvas = document.getElementById("canvas");
+            stage = new createjs.Stage(canvas);
+
+            var background = new createjs.Shape();
+            background.graphics.beginLinearGradientFill(["#f50001", "#e50200"], [0, 1], 0, 0, 0, canvas.height).drawRect(0, 0, canvas.width, canvas.height);
+            stage.addChild(background);
+
+            var devider = new createjs.Shape();
+            devider.graphics.beginFill("black").drawRect(0, canvas.height/2-3, canvas.width, 6);
+            devider.alpha = 0.7;
+            stage.addChild(devider);
+
+            var indicator = new createjs.Shape();
+            indicator.graphics.beginFill("white");
+            indicator.graphics.moveTo(140, 190);
+            indicator.graphics.lineTo(160, 190);
+            indicator.graphics.lineTo(150, 190-17.3);
+            stage.addChild(indicator);
+
+            marker = new createjs.Container();
+            var ticks = new createjs.Shape();
+            ticks.graphics.beginFill("white");
+
+            let x = 150;
+            let y = canvas.height/2 - 25;
+
+            for (var i = 0; i < 61; i++) {
+                if (i % 5) {
+                    ticks.graphics.drawRect(x - 1, y - 5, 2, 10);
+                } else {
+                    var label = new createjs.Text(i, "20px verdana", "white");
+                    label.x = x;
+                    label.y = y-20;
+                    label.textBaseline = "alphabetic";
+                    label.textAlign = "center";
+                    marker.addChild(label);
+
+                    ticks.graphics.drawRect(x - 2, y - 10, 4, 15);
+                }
+                x += 15;
+            }
+
+            marker.addChild(ticks);
+            stage.addChild(marker);
+
+            var gradient = new createjs.Shape();
+            gradient.graphics.beginLinearGradientFill(["#660000", "#ff666600","#ff666600", "#660000"], [0, 0.4, 0.6, 1], 0, 300, canvas.width, canvas.height).drawRect(0, 0, canvas.width, canvas.height);0
+            gradient.alpha = 0.1;
+            stage.addChild(gradient);
+
+
+            createjs.Ticker.addEventListener("tick", stage);
+            createjs.Touch.enable(stage);
+            setValue(5);
+
+            initEventListeners();
+
+            let f = setInterval(1000, function(){
+                console.log("anim");
+                setValue(getValue()+1);
+            })
+        }
+
+        document.getElementById('buttonSet').addEventListener("click", function () {
+            let val = document.getElementById("targetValue").value;
+            setValue(val, 700);
+        });
+
+
+        function getValue() {
+            return Math.abs(marker.x / 15);;
+        }
+
+        async function setValue(a, animationDuration) {
+            console.log(`Setting value: ${a}`);
+            if (a > 60) {
+                a = 60;
+            }
+
+            if (a < 0) {
+                a = 0;
+            }
+
+            //marker.x = -(a * 10);
+            createjs.Tween.get(marker).to({ x: -(a * 15)}, animationDuration, createjs.Ease.circInOut);
+        }
+
+        function initEventListeners() {
+            canvas.addEventListener('mousedown', function (e) {
+                var evt = e || event;
+                dragging = true;
+                lastX = evt.clientX;
+                e.preventDefault();
+            }, false);
+
+            window.addEventListener('mousemove', function (e) {
+                var evt = e || event;
+                if (dragging) {
+                    var delta = evt.clientX - lastX;
+                    lastX = evt.clientX;
+
+                    /*let step = Math.round(delta / 1) * 1;
+                    console.log(step);
+                    marker.x += step;*/
+
+                    let step = Math.round(delta / 1) * 1;
+                    console.log(step);
+                    let current = Math.round(getValue() + (step*-1)); 
+                    if (current === 0 || current === 60 || current === getValue) {
+                        return;
+                    }
+
+                    setValue(current, 100);
+                }
+                e.preventDefault();
+            }, false);
+
+            window.addEventListener('mouseup', function () {
+                if (dragging) {
+                    //marker.x = Math.round(marker.x / 10) * 10;
+                }
+                dragging = false;
+            }, false);
+
+            window.addEventListener('wheel', function (e) {
+                console.log(e);
+                let step = 5;
+
+                if (Math.abs(e.deltaY) < 20 && Math.abs(e.deltaY) >= 20) {
+                    step = 1;
+                }
+
+                if (e.deltaY > 0) {
+                    step = step * -1;
+                }
+
+                let a = getValue() + step
+
+                setValue(Math.round(a / 5) * 5, 75);
+                e.preventDefault();
+            }, false);
+        }
+
+        init(); 
+    </script>
+
+</body>
+
+</html>
