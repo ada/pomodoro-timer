@@ -18,7 +18,7 @@
   },
   "browser_action": {
     "default_icon": "./asset/icons8-tomato-48.png",
-    "default_title": "Web Time",
+    "default_title": "Pomodoro Timer",
     "default_popup": "./popup/popup.html"
   },
   "background": {
