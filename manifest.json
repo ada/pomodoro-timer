@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pomodoro Timer",
-  "version": "1.0",
+  "version": "1.1",
   "description": "The Pomodoro Technique is a time management method developed by Francesco Cirillo.",
   "homepage_url": "https://github.com/ada/pomodoro-timer",
   "icons": {
@@ -10,8 +10,7 @@
   },
   "permissions": [
     "storage",
-    "notifications",
-    "<all_urls>"
+    "notifications"
   ],
   "options_ui": {
     "page": "./options/options.html"
