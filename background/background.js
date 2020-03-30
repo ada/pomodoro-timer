@@ -9,6 +9,7 @@ let onTimeoutNotificationId = 'onTimeoutNotificationId';
 */
 async function init() {
   browser.runtime.onMessage.addListener(handleMessage);
+  browser.browserAction.setBadgeText({ text: "" });
 }
 
 /* 
