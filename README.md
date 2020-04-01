@@ -1,6 +1,8 @@
 # Pomodoro Timer
 An extension which implements the Pomodoro Technique, a time management method developed by Francesco Cirillo for Microsoft Edge.
 
+![Screenshot](screenshot.gif "Screenshot")
+
 # Features
 - Quick template: Pomodoro;
 - Quick template: Short break;
