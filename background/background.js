@@ -115,12 +115,14 @@ async function startTimer(duration, task) {
   Stop the current running timer and reset the pomodoro object
 */
 async function stopTimer() {
+  var settings_clone = await settings.get();
   browser.notifications.clear(onTimeoutNotificationId);
   clearInterval(pomodoro.intervalId);
   clearTimeout(pomodoro.timeoutId);
   pomodoro.timeLeft = 0;
   updateUI();
   let audio = new Audio('../asset/onTimeout.mp3');
+  audio.volume = settings_clone.volume;
   audio.play();
   console.log('Timer stopped.');
 }

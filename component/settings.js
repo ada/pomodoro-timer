@@ -8,7 +8,8 @@ export const defaults = {
         work: 25 * 60 * 1000,
         shortBreak: 5 * 60 * 1000,
         longBreak: 30 * 60 * 1000
-    }
+    },
+    volume: 0.5,
 }
 
 /* 
