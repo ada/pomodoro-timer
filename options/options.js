@@ -8,6 +8,7 @@ let UIRangeWorkDuration = document.getElementById("UIRangeWorkDuration");
 let UIRangeShortBreakDuration = document.getElementById("UIRangeShortBreakDuration");
 let UIRangeLongBreakDuration = document.getElementById("UIRangeLongBreakDuration");
 let UIButtonReset = document.getElementById("UIButtonReset");
+let UISoundEffectVolume = document.getElementById("UISoundEffectVolume");
 
 /* 
     Event listeners
@@ -16,10 +17,12 @@ async function initEventListeners() {
     UIRangeWorkDuration.addEventListener("change", onOptionsChanged);
     UIRangeShortBreakDuration.addEventListener("change", onOptionsChanged);
     UIRangeLongBreakDuration.addEventListener("change", onOptionsChanged);
-
+    UISoundEffectVolume.addEventListener("change", onOptionsChanged);
+    
     UIRangeWorkDuration.addEventListener("input", onWorkDurationChanged);
     UIRangeShortBreakDuration.addEventListener("input", onShortBreakDurationChanged);
     UIRangeLongBreakDuration.addEventListener("input", onLongBreakDurationChanged);
+    UISoundEffectVolume.addEventListener("input", onSoundEffectVolumeChanged);
 
     UIButtonReset.addEventListener("click", resetSettings);
 }
@@ -32,6 +35,7 @@ async function init() {
     UIRangeWorkDuration.value = toMinutes(_settings.duration.work);
     UIRangeShortBreakDuration.value = toMinutes(_settings.duration.shortBreak);
     UIRangeLongBreakDuration.value = toMinutes(_settings.duration.longBreak);
+    UISoundEffectVolume.value = _settings.volume;
     initEventListeners();
 }
 
@@ -50,6 +54,7 @@ async function onOptionsChanged() {
     _settings.duration.work = toMilliseconds(UIRangeWorkDuration.value);
     _settings.duration.shortBreak = toMilliseconds(UIRangeShortBreakDuration.value);
     _settings.duration.longBreak = toMilliseconds(UIRangeLongBreakDuration.value);
+    _settings.volume = UISoundEffectVolume.value;
     await settings.set(_settings);
 }
 
@@ -76,5 +81,8 @@ async function onLongBreakDurationChanged() {
     console.log(UIRangeLongBreakDuration.value);
 }
 
+async function onSoundEffectVolumeChanged() {
+  console.log(UISoundEffectVolume.value);
+}
 
 init(); 
